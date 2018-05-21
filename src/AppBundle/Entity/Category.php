@@ -2,6 +2,7 @@
 
 namespace AppBundle\Entity;
 
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -28,6 +29,10 @@ class Category
      */
     private $name;
 
+    /**
+     * @ORM\OneToMany(targetEntity="Product", mappedBy="category")
+     */
+    private $products;
 
     /**
      * Get id
@@ -61,6 +66,26 @@ class Category
     public function getName()
     {
         return $this->name;
+    }
+
+    /**
+     * Get products
+     *
+     * @return Collection
+     */
+    public function getProducts()
+    {
+        return $this->products;
+    }
+
+    /**
+     * Add product
+     *
+     * @param Product $product
+     */
+    public function addProduct($product)
+    {
+        $this->products[] = $product;
     }
 }
 
