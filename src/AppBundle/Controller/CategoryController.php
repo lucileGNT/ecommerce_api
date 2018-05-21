@@ -58,4 +58,34 @@ class CategoryController extends Controller
         return $response;
 
     }
+
+    /**
+     * Get list of all categories
+     *
+     * @Route("/api/categories/", name="add_category")
+     * @Method({"GET"})
+     */
+    public function getCategoryListAction(Request $request)
+    {
+        //Find all categories in database
+        $categories = $this->getDoctrine()
+            ->getRepository("AppBundle:Category")
+            ->findAll();
+
+        //Build array of results
+        $results = [];
+
+        foreach ($categories as $category) {
+            $results[]= ['id' => $category->getId(), 'name' => $category->getName()];
+        }
+
+        //Encode in JSON
+        $response = new Response();
+        $categoriesJSON = json_encode(array('categories' => $results));
+
+        $response->headers->set('Content-Type', 'application/json');
+        $response->setContent($categoriesJSON);
+
+        return $response;
+    }
 }
