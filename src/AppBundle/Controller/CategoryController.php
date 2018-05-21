@@ -62,7 +62,7 @@ class CategoryController extends Controller
     /**
      * Get list of all categories
      *
-     * @Route("/api/categories/", name="add_category")
+     * @Route("/api/categories/", name="list_categories")
      * @Method({"GET"})
      */
     public function getCategoryListAction(Request $request)
