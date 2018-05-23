@@ -1,6 +1,6 @@
-# tech_newsfeed
+# ecommerce_api
 
-Inspired by YCombinator's Hacker news : news.ycombinator.com
+API helpful for an ecommerce website
 
 To install the project :
 
