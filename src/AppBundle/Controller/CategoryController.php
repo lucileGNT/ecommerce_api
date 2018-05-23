@@ -137,7 +137,7 @@ class CategoryController extends Controller
             'nbProducts' => $nbProducts,
             'pageNumber' => (int)($nbProducts/$limit+1),
             'products' => $results
-                                            ));
+        ));
 
         $response->headers->set('Content-Type', 'application/json');
         $response->setContent($productsJSON);
