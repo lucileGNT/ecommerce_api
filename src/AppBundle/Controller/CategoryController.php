@@ -21,6 +21,9 @@ use Doctrine\ORM\Tools\Pagination\Paginator;
 
 class CategoryController extends Controller
 {
+    //Default values for pagination
+    const DEFAULT_PAGE = 1;
+    const DEFAULT_PAGE_LENGTH = 10;
     /**
      * Add a new category
      *
@@ -100,26 +103,22 @@ class CategoryController extends Controller
     {
 
         //Get pagination params
-        $page = $request->query->get('page') !== null ? (int)$request->query->get('page') : 1;
-        $limit = $request->query->get('limit') !== null ? (int)$request->query->get('limit') : 10;
+        $page = $request->query->get('page') !== null ? (int)$request->query->get('page') : self::DEFAULT_PAGE;
+        $limit = $request->query->get('limit') !== null ? (int)$request->query->get('limit') : self::DEFAULT_PAGE_LENGTH;
 
         $category = $this->getDoctrine()
             ->getRepository("AppBundle:Category")
             ->find($id);
 
-        $allProducts = $this->getDoctrine()
+        //Get total number of products for this category
+        $nbProducts = $this->getDoctrine()
             ->getRepository("AppBundle:Product")
-            ->findBy(['category' => $category]);
+            ->countProductsInCategory($category);
 
-        $nbProducts = count($allProducts);
 
-        $dql = "SELECT p FROM AppBundle:Product p WHERE p.category = :category";
-        $query = $this->getDoctrine()->getEntityManager()->createQuery($dql)
-            ->setParameter('category', $category)
-            ->setFirstResult(($page-1)*$limit)
-            ->setMaxResults($limit);
-
-        $products = $query->getResult();
+        //Get products from a specific category and a specific page
+        $products = $this->getDoctrine()
+            ->getRepository("AppBundle:Product")->getProductsFromCategoryByPage($category, $page, $limit);
 
         //Build array of results
         $results = [];
@@ -136,7 +135,7 @@ class CategoryController extends Controller
         $response = new Response();
         $productsJSON = json_encode(array(
             'nbProducts' => $nbProducts,
-            'nbPages' => (int)($nbProducts/$limit+1),
+            'pageNumber' => (int)($nbProducts/$limit+1),
             'products' => $results
                                             ));
 
